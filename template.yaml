@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Refresh Amazon QuickSight SPICE Dataset
+
+Resources:
+  ########################################
+  # Lambda
+  ########################################
+  FunctionRespice:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: respice
+      CodeUri: src/refresh_spice/
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.7
+      MemorySize: 128
+      Tracing: Active
+      Timeout: 15
+      Environment:
+        Variables: 
+          ACCOUNT_ID: !Ref AWS::AccountId
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - quicksight:ListIngestions
+              - quicksight:CreateIngestion
+            Resource: "*"
